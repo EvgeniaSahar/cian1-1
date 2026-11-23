@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ff6f00" />
+    <title>Циан — главная</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="app" aria-label="Прототип главной страницы Циана">
+        <header class="topbar">
+          <a class="logo" href="#top" aria-label="Циан, главная"><span class="logo-mark">ц</span><span>циан</span></a>
+          <button class="round-button" type="button" data-notice="Уведомлений пока нет" aria-label="Уведомления"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" /></svg></button>
+          <button class="avatar" type="button" data-notice="Профиль: демо-режим" aria-label="Профиль">ЕС</button>
+        </header>
+
+        <div class="mode-switch" role="group" aria-label="Сценарий пользователя">
+          <button class="mode-button is-active" type="button" data-mode="returning">С историей</button>
+          <button class="mode-button" type="button" data-mode="new">Первый визит</button>
+        </div>
+
+        <section class="hero" id="top">
+          <p class="eyebrow" id="greeting">Добрый день, Евгения</p>
+          <h1 id="hero-title">Продолжим искать квартиру?</h1>
+          <button class="search-trigger" type="button" aria-haspopup="dialog" aria-controls="search-sheet">
+            <span class="search-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6" /><path d="m16 16 4 4" /></svg></span><span id="search-label">Район, метро или ЖК</span><span class="search-filter">2</span>
+          </button>
+        </section>
+
+        <section class="section" aria-labelledby="history-title">
+          <div class="section-heading">
+            <h2 id="history-title">Ваши поиски</h2>
+            <button class="text-button" id="edit-searches" type="button">Изменить</button>
+          </div>
+          <div class="history-list" id="history-list"></div>
+        </section>
+
+        <section class="section" aria-labelledby="directions-title">
+          <div class="section-heading compact">
+            <h2 id="directions-title">Что ищем?</h2><span>Выберите направление</span>
+          </div>
+          <div class="direction-grid" id="direction-grid"></div>
+        </section>
+
+        <section class="section" aria-labelledby="recommendations-title">
+          <div class="section-heading">
+            <div><h2 id="recommendations-title">Для вас</h2><p id="recommendations-subtitle">Подобрали рядом с вашими поисками</p></div>
+            <button class="text-button" type="button" data-notice="Показываем все рекомендации">Все</button>
+          </div>
+          <button class="main-property" type="button" data-notice="Открыта карточка квартиры">
+            <span class="property-image"><span class="verified">Проверено Циан</span></span>
+            <span class="property-copy"><strong>18,5 млн ₽</strong><b>2-комн. квартира, 54 м²</b><small>8 мин. до м. Савёловская</small><em>Ипотека от 63 000 ₽</em></span>
+          </button>
+          <div class="property-row" id="property-row"></div>
+        </section>
+
+        <aside class="ad-card" aria-label="Рекламное предложение">
+          <div><small>Реклама</small><h2>Переезд без забот</h2><p>Сравните цены проверенных перевозчиков.</p><button type="button" data-notice="Переходим к расчёту переезда">Рассчитать стоимость</button></div>
+          <div class="ad-art" aria-hidden="true"><span>⌂</span><i>→</i><span>⌂</span></div>
+        </aside>
+
+        <section class="section services" aria-labelledby="services-title">
+          <h2 id="services-title">Сервисы Циана</h2>
+          <div class="service-list">
+            <button type="button" data-notice="Открыт калькулятор ипотеки"><span class="service-icon mortgage">%</span><span>Рассчитать ипотеку</span><i>›</i></button>
+            <button type="button" data-notice="Открыта оценка квартиры"><span class="service-icon price">₽</span><span>Узнать цену квартиры</span><i>›</i></button>
+          </div>
+        </section>
+
+        <nav class="bottom-nav" aria-label="Основная навигация">
+          <button class="nav-item is-active" type="button" data-nav="Главная"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" /><path d="M9 21v-6h6v6" /></svg></span>Главная</button>
+          <button class="nav-item" type="button" data-nav="Избранное"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 1 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6Z" /></svg></span>Избранное</button>
+          <button class="nav-item" type="button" data-nav="Сообщения"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8 8 0 0 1-8.5 8 9.4 9.4 0 0 1-3.7-.8L3 21l1.7-4.3A7.7 7.7 0 0 1 4 13a8 8 0 0 1 8.5-8 8 8 0 0 1 8.5 6.5Z" /></svg></span>Сообщения</button>
+          <button class="nav-item" type="button" data-nav="Профиль"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21c.8-4 3.4-6 8-6s7.2 2 8 6" /></svg></span>Профиль</button>
+        </nav>
+      </section>
+    </main>
+
+    <dialog class="sheet" id="search-sheet" aria-labelledby="search-title">
+      <div class="grabber"></div>
+      <div class="sheet-heading"><h2 id="search-title">Где ищем?</h2><button class="close" type="button" aria-label="Закрыть">×</button></div>
+      <label class="search-input"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6" /><path d="m16 16 4 4" /></svg></span><input id="query-input" type="search" placeholder="Район, метро или ЖК" autofocus /></label>
+      <p class="sheet-label">Популярное</p>
+      <div class="quick-queries"><button type="button" data-query="Москва">Москва</button><button type="button" data-query="Новостройки">Новостройки</button><button type="button" data-query="У метро">У метро</button></div>
+      <button class="primary-action" id="find-button" type="button">Показать объявления</button>
+    </dialog>
+
+    <dialog class="sheet" id="direction-sheet" aria-labelledby="direction-title">
+      <div class="grabber"></div>
+      <div class="sheet-heading"><div><p class="eyebrow">Направление</p><h2 id="direction-title">Купить</h2></div><button class="close" type="button" aria-label="Закрыть">×</button></div>
+      <p class="direction-description" id="direction-description"></p>
+      <button class="primary-action" id="direction-action" type="button">Открыть поиск</button>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
