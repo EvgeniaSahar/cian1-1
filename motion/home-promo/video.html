@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Циан · мобильная главная</title>
+  <script src="plan.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #f4f6fb; font-family: Arial, Helvetica, sans-serif; }
+    #frame { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: radial-gradient(circle at 82% 7%, #fff0dc 0, transparent 26%), #f5f7fc; }
+    .screen { position: absolute; inset: 0; width: 860px; height: 1864px; left: 110px; top: 28px; transform-origin: 50% 50%; opacity: 0; filter: drop-shadow(0 28px 48px rgba(36, 59, 102, .16)); }
+    .screen img { display: block; width: 100%; height: 100%; border-radius: 34px; }
+    .veil { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(17, 32, 66, .48), transparent 28%, transparent 65%, rgba(17, 32, 66, .66)); opacity: .04; pointer-events: none; }
+    #caption { position: absolute; left: 54px; right: 54px; bottom: 84px; color: #fff; font-size: 57px; line-height: 1.02; font-weight: 800; letter-spacing: -2px; text-shadow: 0 3px 18px rgba(11, 24, 51, .3); opacity: 0; }
+    #caption span { display: inline; background: #132a5e; box-decoration-break: clone; -webkit-box-decoration-break: clone; padding: 9px 18px 13px; border-radius: 16px; }
+    #eyebrow { position: absolute; left: 54px; top: 52px; color: #1c4d9f; background: rgba(255, 255, 255, .94); border-radius: 999px; padding: 13px 22px; font-size: 24px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; box-shadow: 0 12px 30px rgba(19, 42, 94, .12); opacity: 0; }
+    #cursor { position: absolute; width: 56px; height: 70px; left: -100px; top: -100px; z-index: 4; filter: drop-shadow(0 5px 7px rgba(0,0,0,.32)); }
+    #cursor path { fill: white; stroke: #172a57; stroke-width: 4; stroke-linejoin: round; }
+    #pulse { position: absolute; width: 86px; height: 86px; border: 5px solid #ff6f00; border-radius: 50%; transform: translate(-50%, -50%) scale(0); opacity: 0; z-index: 3; }
+    #end { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 62px 164px; background: linear-gradient(180deg, transparent 30%, rgba(18, 42, 94, .78) 100%); color: #fff; opacity: 0; }
+    #end b { color: #ff7900; font-size: 38px; letter-spacing: -1px; margin-bottom: 18px; }
+    #end h1 { margin: 0; font-size: 74px; line-height: .96; letter-spacing: -3px; max-width: 850px; }
+    #end p { margin: 24px 0 0; font-size: 34px; line-height: 1.2; color: #e9eefb; }
+  </style>
+</head>
+<body>
+  <div id="frame">
+    <div class="screen" id="home"><img src="assets/home.png" alt="Главная"></div>
+    <div class="screen" id="saved"><img src="assets/saved-search.png" alt="Сохранённый поиск"></div>
+    <div class="screen" id="buy"><img src="assets/buy.png" alt="Вертикаль Купить"></div>
+    <div class="screen" id="search"><img src="assets/search.png" alt="Поисковая панель"></div>
+    <div class="screen" id="recs"><img src="assets/recommendations.png" alt="Рекомендации"></div>
+    <div class="veil"></div>
+    <div id="eyebrow"></div>
+    <div id="caption"><span></span></div>
+    <div id="pulse"></div>
+    <svg id="cursor" viewBox="0 0 64 80" aria-hidden="true"><path d="M8 4 53 43 35 46 27 69z"/></svg>
+    <div id="end"><b>циан</b><h1>Ищите.<br>Сохраняйте.<br>Возвращайтесь.</h1><p>Главная, которая ведёт к нужному жилью.</p></div>
+  </div>
+  <script>
+    window.DURATION = window.PLAN.duration;
+    window.FPS = window.PLAN.fps;
+    const el = Object.fromEntries(['home', 'saved', 'buy', 'search', 'recs', 'caption', 'eyebrow', 'cursor', 'pulse', 'end'].map(id => [id, document.getElementById(id)]));
+    const clamp = value => Math.max(0, Math.min(1, value));
+    const ease = value => { value = clamp(value); return value * value * (3 - 2 * value); };
+    const span = (time, start, end) => ease((time - start) / (end - start));
+    const fade = (time, start, end) => Math.min(span(time, start, start + .35), 1 - span(time, end - .35, end));
+    const setScreen = (node, opacity, scale = 1, x = 0, y = 0) => {
+      node.style.opacity = opacity.toFixed(3);
+      node.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+    };
+    const cursor = (x, y, opacity) => {
+      el.cursor.style.left = `${x}px`; el.cursor.style.top = `${y}px`; el.cursor.style.opacity = opacity;
+    };
+    const caption = (text, label, opacity) => {
+      el.caption.querySelector('span').textContent = text;
+      el.caption.style.opacity = opacity;
+      el.eyebrow.textContent = label;
+      el.eyebrow.style.opacity = opacity;
+    };
+    const pulse = (time, at, x, y) => {
+      const progress = clamp((time - at) / .48);
+      el.pulse.style.left = `${x}px`; el.pulse.style.top = `${y}px`;
+      el.pulse.style.opacity = progress < 1 ? (1 - progress).toFixed(2) : 0;
+      el.pulse.style.transform = `translate(-50%, -50%) scale(${.35 + progress * 1.25})`;
+    };
+    window.render = time => {
+      const active = (start, end) => time >= start && time < end ? 1 : 0;
+      const homeOpacity = active(0, 1.75) || active(6.5, 7.5) ? 1 : 0;
+      setScreen(el.home, homeOpacity, 1.02 + .03 * span(time, 0, 2.25));
+      setScreen(el.saved, active(1.75, 3.75), 1.02 + .04 * span(time, 1.75, 3.75));
+      setScreen(el.buy, active(3.75, 6.5), 1.02 + .05 * span(time, 3.75, 6.5));
+      setScreen(el.search, active(7.5, 10.25), 1.02 + .04 * span(time, 7.5, 10.25));
+      setScreen(el.recs, active(10.25, 13.5), 1.02 + .05 * span(time, 10.25, 13.5));
+      el.end.style.opacity = span(time, 13.45, 14.0).toFixed(3);
+      let text = 'Поиск — на первом экране', label = 'Новая главная', visible = fade(time, 0, 1.75);
+      if (time >= 1.75 && time < 3.75) { text = 'Продолжайте с сохранённого поиска'; label = 'Вернулись к поиску'; visible = fade(time, 1.75, 3.75); }
+      if (time >= 3.75 && time < 6.5) { text = 'Выберите нужное направление'; label = 'Пять вертикалей'; visible = fade(time, 3.75, 6.5); }
+      if (time >= 7.5 && time < 10.25) { text = 'Уточняйте район, метро или ЖК'; label = 'Быстрый поиск'; visible = fade(time, 7.5, 10.25); }
+      if (time >= 10.25 && time < 13.5) { text = 'Рекомендации уже ждут вас'; label = 'Для вас'; visible = fade(time, 10.25, 13.5); }
+      caption(text, label, visible);
+      cursor(-100, -100, 0);
+      el.pulse.style.opacity = 0;
+      if (time >= .7 && time < 1.8) { const p = span(time, .7, 1.5); cursor(357 - 58 * p, 815 - 44 * p, 1); pulse(time, 1.5, 298, 771); }
+      if (time >= 2.7 && time < 3.8) { const p = span(time, 2.7, 3.5); cursor(522 - 240 * p, 1250 - 125 * p, 1); pulse(time, 3.5, 280, 1127); }
+      if (time >= 6.45 && time < 7.55) { const p = span(time, 6.45, 7.25); cursor(702 - 250 * p, 670 - 165 * p, 1); pulse(time, 7.25, 452, 505); }
+      if (time >= 9.6 && time < 10.7) { const p = span(time, 9.6, 10.25); cursor(678 - 260 * p, 1265 - 340 * p, 1); pulse(time, 10.25, 418, 929); }
+    };
+    window.READY = true;
+  </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+.agents/skills/product-motion/.runtime/
+motion/**/build/
+motion/**/out/
+.DS_Store
