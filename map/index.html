@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1a73e8" />
+    <title>Циан — карта сценария</title>
+    <link rel="stylesheet" href="map.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="page-header">
+        <a class="back-link" href="/">← К прототипу</a>
+        <p class="eyebrow">Сценарий 3.3</p>
+        <h1>Карта экранов<br />главной Циана</h1>
+        <p class="intro">Путь нового и возвращающегося пользователя: от точки входа до поиска, рекомендаций и сервисов.</p>
+        <div class="legend"><span><i class="screen-dot"></i> Экран</span><span><i class="event-dot"></i> Событие Метрики</span><span><i class="variant-dot"></i> Вариант B</span></div>
+      </header>
+
+      <section class="map-section" aria-labelledby="flow-title">
+        <div class="section-heading"><div><p class="eyebrow">Flow</p><h2 id="flow-title">Карта переходов</h2></div><span class="counter">ID счётчика: 99999999</span></div>
+        <div class="map-scroll">
+          <div class="scenario-map">
+            <svg class="connectors" viewBox="0 0 1500 730" aria-hidden="true">
+              <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" /></marker></defs>
+              <path d="M288 191H365" marker-end="url(#arrow)" /><path d="M635 191H713" marker-end="url(#arrow)" /><path d="M983 191H1061" marker-end="url(#arrow)" />
+              <path d="M288 540H364" marker-end="url(#arrow)" /><path d="M635 540H713" marker-end="url(#arrow)" /><path d="M983 540H1061" marker-end="url(#arrow)" />
+              <path d="M164 326V425" marker-end="url(#arrow)" /><path d="M482 326V425" marker-end="url(#arrow)" /><path d="M830 326V425" marker-end="url(#arrow)" />
+            </svg>
+
+            <article class="screen-card returning" style="--x: 36px; --y: 55px"><div class="screen-label">01 · returning</div><div class="phone home-mini"><div class="mini-top">циан <b>ЕС</b></div><strong>Продолжим искать?</strong><span class="mini-search">⌕ Район, метро или ЖК</span><div class="mini-chip orange">Купить</div><div class="mini-chip blue">Новостройки</div></div><p>Главная с сохранёнными поисками</p><code>home_viewed {step: "returning"}</code></article>
+            <article class="screen-card search" style="--x: 365px; --y: 55px"><div class="screen-label">02 · search</div><div class="phone sheet-mini"><i></i><strong>Где ищем?</strong><span class="mini-search focus">⌕ Савёловская</span><small>Москва · Новостройки · У метро</small><button>Показать объявления</button></div><p>Нижняя панель поиска</p><code>home_search_opened {step: "search"}</code></article>
+            <article class="screen-card results" style="--x: 713px; --y: 55px"><div class="screen-label">03 · results</div><div class="phone result-mini"><div class="mini-top">‹ Результаты</div><b>2 348 объявлений</b><span></span><span></span><span></span></div><p>Результат поиска</p><code>home_search_submitted {step: "search_submit"}</code></article>
+            <article class="screen-card detail" style="--x: 1061px; --y: 55px"><div class="screen-label">04 · detail</div><div class="phone detail-mini"><span></span><b>18,5 млн ₽</b><small>2-комн. квартира<br />м. Савёловская</small><button>Написать</button></div><p>Карточка рекомендации</p><code>home_recommendation_opened {step: "secondary_action"}</code></article>
+
+            <article class="screen-card new-user" style="--x: 36px; --y: 404px"><div class="screen-label">05 · new</div><div class="phone home-mini new"><div class="mini-top">циан <b>+</b></div><strong>С чего начнём поиск?</strong><span class="mini-search">⌕ Район, метро или ЖК</span><div class="mini-chip orange">Купить</div><div class="mini-chip blue">Снять</div></div><p>Главная без истории</p><code>home_mode_selected {step: "mode", mode: "new"}</code></article>
+            <article class="screen-card vertical" style="--x: 365px; --y: 404px"><div class="screen-label">06 · vertical</div><div class="phone sheet-mini vertical-sheet"><i></i><small>Направление</small><strong>Купить</strong><p>Настроим фильтры и покажем подходящие варианты.</p><button>Найти: купить</button></div><p>Точка входа в вертикаль</p><code>home_vertical_selected {step: "vertical", vertical: "buy"}</code></article>
+            <article class="screen-card service" style="--x: 713px; --y: 404px"><div class="screen-label">07 · service</div><div class="phone service-mini"><div class="mini-top">‹ Сервисы</div><b>Ипотека</b><small>Ставка от 6,2%</small><label>Стоимость жилья</label><span>20 000 000 ₽</span><button>Рассчитать</button></div><p>Ипотечный сервис</p><code>home_service_opened {step: "secondary_action"}</code></article>
+            <article class="screen-card ad" style="--x: 1061px; --y: 404px"><div class="screen-label">08 · ad</div><div class="phone ad-mini"><small>Реклама</small><b>Переезд<br />без забот</b><span>Сравните цены перевозчиков</span><button>Рассчитать</button></div><p>Рекламный переход</p><code>home_ad_clicked {step: "secondary_action"}</code></article>
+
+            <span class="event-tag tag-1">tap search · <b>home_search_opened</b></span><span class="event-tag tag-2">submit query · <b>home_search_submitted</b></span><span class="event-tag tag-3">open card · <b>home_recommendation_opened</b></span><span class="event-tag tag-4">switch state · <b>home_mode_selected</b></span><span class="event-tag tag-5">tap vertical · <b>home_vertical_selected</b></span><span class="event-tag tag-6">open service · <b>home_service_opened</b></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="experiment" aria-labelledby="experiment-title">
+        <div><p class="eyebrow">Experiment</p><h2 id="experiment-title">A/B-тест первого экрана</h2><p class="experiment-lead">Проверяем, помогает ли усиленный блок рекомендаций быстрее перейти к целевому поиску у возвращающихся пользователей.</p></div>
+        <div class="experiment-grid">
+          <article><span class="number">01</span><h3>Гипотеза</h3><p>Если рекомендации показать в первом экране рядом с поиском, возвращающиеся пользователи чаще продолжат путь к объявлениям.</p></article>
+          <article class="variant"><span class="number">B</span><h3>Что меняем</h3><p>В B добавляем одну персональную карточку рекомендации под поиском и сокращаем блок вертикалей до одной строки.</p></article>
+          <article><span class="number">◎</span><h3>Основная метрика</h3><p>Доля пользователей, совершивших <code>home_search_submitted</code> в течение сессии.</p></article>
+          <article><span class="number">!</span><h3>Ограничивающая метрика</h3><p>Не допускаем падения доли <code>home_vertical_selected</code> более чем на 3% относительно A.</p></article>
+        </div>
+        <div class="sample-note"><strong>Объём и срок:</strong> 7 000 пользователей на вариант, 14 000 всего. При 1 000 подходящих пользователей в день на вариант — минимум 7 дней на набор и 14 календарных дней для учёта недельной сезонности. Расчёт: α = 5%, мощность = 80%, MDE = +10% к базовой конверсии 22%.</div>
+      </section>
+    </main>
+  </body>
+</html>

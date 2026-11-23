@@ -7,6 +7,8 @@ const state = {
   ],
 };
 
+const METRIKA_COUNTER_ID = 99999999;
+
 const directions = [
   { id: "buy", label: "Купить", icon: "home", description: "Квартиры на вторичном рынке и в новостройках. Настроим фильтры и покажем подходящие варианты." },
   { id: "rent", label: "Снять", icon: "key", description: "Долгосрочная аренда квартир и комнат. Сохраняйте понравившиеся варианты в избранное." },
@@ -39,6 +41,14 @@ function notify(message) {
   notify.timeout = window.setTimeout(() => toast.classList.remove("is-visible"), 2400);
 }
 
+function trackGoal(goal, parameters) {
+  const payload = { step: "unknown", ...parameters };
+  if (typeof window.ym === "function") {
+    window.ym(METRIKA_COUNTER_ID, "reachGoal", goal, payload);
+  }
+  console.info("[Metrika stub]", METRIKA_COUNTER_ID, goal, payload);
+}
+
 function renderHistory() {
   historyList.innerHTML = "";
   if (!state.savedSearches.length) {
@@ -51,7 +61,10 @@ function renderHistory() {
     card.className = "history-card";
     card.type = "button";
     card.innerHTML = `<span class="history-icon">${icon(search.icon === "⌂" ? "home" : "buildings")}</span><span><strong>${search.title}</strong><small>${search.subtitle}</small></span>`;
-    card.addEventListener("click", () => notify(`Открываем поиск: ${search.title}`));
+    card.addEventListener("click", () => {
+      trackGoal("home_saved_search_opened", { step: "saved_search", search: search.title });
+      notify(`Открываем поиск: ${search.title}`);
+    });
     historyList.append(card);
   });
 }
@@ -78,6 +91,7 @@ function renderPropertyRow() {
 function setMode(mode) {
   const returning = mode === "returning";
   state.mode = mode;
+  trackGoal("home_mode_selected", { step: "mode", mode });
   document.querySelectorAll(".mode-button").forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
   document.querySelector("#greeting").textContent = returning ? "Добрый день, Евгения" : "Найдём жильё для вас";
   document.querySelector("#hero-title").textContent = returning ? "Продолжим искать квартиру?" : "С чего начнём поиск?";
@@ -92,6 +106,7 @@ function setMode(mode) {
 
 function openDirection(direction) {
   state.activeDirection = direction;
+  trackGoal("home_vertical_selected", { step: "vertical", vertical: direction.id });
   document.querySelector("#direction-title").textContent = direction.label;
   document.querySelector("#direction-description").textContent = direction.description;
   document.querySelector("#direction-action").textContent = `Найти: ${direction.label.toLowerCase()}`;
@@ -99,25 +114,35 @@ function openDirection(direction) {
 }
 
 document.querySelectorAll(".mode-button").forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
-document.querySelector(".search-trigger").addEventListener("click", () => searchSheet.showModal());
+document.querySelector(".search-trigger").addEventListener("click", () => {
+  trackGoal("home_search_opened", { step: "search" });
+  searchSheet.showModal();
+});
 document.querySelectorAll(".close").forEach((button) => button.addEventListener("click", () => button.closest("dialog").close()));
 document.querySelectorAll("[data-query]").forEach((button) => button.addEventListener("click", () => { document.querySelector("#query-input").value = button.dataset.query; }));
 document.querySelector("#find-button").addEventListener("click", () => {
   const query = document.querySelector("#query-input").value.trim() || "Москва";
   document.querySelector("#search-label").textContent = query;
   searchSheet.close();
+  trackGoal("home_search_submitted", { step: "search_submit", query });
   notify(`Показываем объявления: ${query}`);
 });
 document.querySelector("#direction-action").addEventListener("click", () => {
   document.querySelector("#search-label").textContent = state.activeDirection.label;
   directionSheet.close();
+  trackGoal("home_vertical_search_started", { step: "vertical_submit", vertical: state.activeDirection.id });
   notify(`Открыт поиск: ${state.activeDirection.label}`);
 });
 document.querySelector("#edit-searches").addEventListener("click", () => notify("В демо-версии список поисков доступен для редактирования"));
-document.querySelectorAll("[data-notice]").forEach((button) => button.addEventListener("click", () => notify(button.dataset.notice)));
+document.querySelectorAll("[data-notice]").forEach((button) => button.addEventListener("click", () => {
+  const goal = button.dataset.goal || "home_secondary_action";
+  trackGoal(goal, { step: "secondary_action", action: button.dataset.goal || button.dataset.notice });
+  notify(button.dataset.notice);
+}));
 document.querySelectorAll(".nav-item").forEach((button) => button.addEventListener("click", () => {
   document.querySelectorAll(".nav-item").forEach((item) => item.classList.remove("is-active"));
   button.classList.add("is-active");
+  trackGoal("home_tab_selected", { step: "tab", tab: button.dataset.nav });
   notify(button.dataset.nav === "Главная" ? "Вы на главной" : `${button.dataset.nav}: демо-экран`);
 }));
 
